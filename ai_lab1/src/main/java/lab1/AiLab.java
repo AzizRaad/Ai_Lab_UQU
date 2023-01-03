@@ -7,14 +7,17 @@ package lab1;
 
 import java.io.*;
 import java.util.*;
+import java.lang.Math;   
+
 
 /**
  *
  * @author Aziz
  */
 public class AiLab {
-    public static final int[] GOAL = {1,2,3,4,5,6,7,8,0};
+    public static final int[] GOAL = {1,2,3,4,5,6,7,8,0};  //the goal array that represents the goal 8-puzzle
     public static final ArrayList<Node> visited = new ArrayList<Node>();
+    public static Queue<Node> fringe = new PriorityQueue<Node>();
     
     public static boolean isGoal(int[] a1){
         for (int i = 0; i < a1.length; i++) {
@@ -38,10 +41,6 @@ public class AiLab {
                 return i;
         }
         return -1;
-    }
-    
-    public static void  BFS(int[] init){
-        
     }
     
     public static ArrayList getMovements(Node node){
@@ -94,9 +93,9 @@ public class AiLab {
         return direction;
     }
     
-    public static ArrayList generateChildren(Node node){
+    public static ArrayList<Node> generateChildren(Node node){
         ArrayList directions =  getMovements(node);
-        ArrayList children = new ArrayList();
+        ArrayList<Node> children = new ArrayList<Node>();
         for (int i = 0; i < directions.size(); i++) {
             int[] oldState = node.state;
             int[] newState = Arrays.copyOf(oldState, oldState.length);
@@ -143,6 +142,24 @@ public class AiLab {
         state[first] = state[second];
         state[second] = temp;
     }
+    public static Node randomNode(){
+        Node node = new Node(GOAL,0);
+        for (int i = 0; i < 50; i++) {
+            ArrayList<Node> children =  generateChildren(node);
+            int randomIndex = (int) (Math.random() * children.size());
+            node = children.get(randomIndex);
+        }
+        return node;
+    }
+    public static void BFS(){
+        Node node = randomNode();
+        visited.add(node);
+        while(!visited.isEmpty()){
+            node = fringe.remove();
+        }
+    }
+    
+    
     
     public static void main (String [] args){
         
@@ -155,12 +172,13 @@ public class AiLab {
         Node node = new Node(map, 0);
         Node node2 = new Node(map3, 0);
         visited.add(node);
-        System.out.println(isGoal(map));
-        System.out.println(locateZero(node));
-        System.out.println(getMovements(node));
-        generateChildren(node);
-        System.out.println(generateChildren(node));
-        System.out.println(isVisited(node2));
+//        System.out.println(isGoal(map));
+//        System.out.println(locateZero(node));
+//        System.out.println(getMovements(node));
+//        generateChildren(node);
+//        System.out.println(generateChildren(node));
+//        System.out.println(isVisited(node2));
+          System.out.println(randomNode());
     }
 }
 
@@ -174,10 +192,11 @@ class  Node {
     }
     
     public String toString(){
-        String result = "[" ;
-        for (int i = 0; i < state.length; i++) {
-            result += state[i] + ", ";
+        String result = "\n" ;
+        for (int i = 1; i < state.length+1; i++) {
+            result += state[i-1] + " ";
+            if(i % 3 == 0) result += "\n";
         }
-        return result + "] \n";
+        return result + "\n";
     }
 }
