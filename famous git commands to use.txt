@@ -1,0 +1,43 @@
+to upload your part of work:
+
+1- git add "file name" / git add --all
+
+2- git commit -m "comment with changes you made"
+
+3- git push origin 
+
+
+To undo "add" command
+git restore --staged <file_name>
+
+
+To undo "editing" on local repo
+git restore <file_name>
+
+
+to undo "commit" command
+git reset --soft HEAD^
+
+
+To download the files from remote repo to your device:
+
+1- git pull origin
+
+
+Create new branch using CMD from your device
+1- make sure you are in the right directory 
+2- use: 
+	git chechkout -b <branch_name>
+
+
+To see branchs available on your device
+	git branch 
+
+To switch between your branches 
+	git switch <branch_name>
+	git checkout <branch_name>
+
+To get the recently added branches on remote repo 
+	1- git fetch --all OR git fetch <branch_name>
+	2- git branch -a (to make sure its all showing)
+	3- git pull origin <branch_name>

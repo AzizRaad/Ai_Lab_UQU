@@ -21,8 +21,9 @@ public class AiLab {
     public static final ArrayList<Node> visited = new ArrayList<Node>();
     public static Queue<Node> fringe = new LinkedList<Node>();
     public static long nodesCounter = 0;
-    public static final int TRUEDEPTH = 35;
-
+    public static final int TRUEDEPTH = 15;
+    
+    // This method should help us make sure if we hit the goal or not yet 
     public static boolean isGoal(int[] a1) {
         for (int i = 0; i < a1.length; i++) {
             if (a1[i] != GOAL[i]) {
@@ -31,7 +32,8 @@ public class AiLab {
         }
         return true;
     }
-
+    
+    //This method help us in addition to isVisited method to make sure if a node is visited or not
     public static boolean isEqual(int[] a1, int[] a2) {
         for (int i = 0; i < a1.length; i++) {
             if (a1[i] != a2[i]) {
@@ -40,7 +42,8 @@ public class AiLab {
         }
         return true;
     }
-
+    
+    //This method help us at the initial puzzle to find where is the empty box at
     public static int locateZero(Node a1) {
         for (int i = 0; i < a1.state.length; i++) {
             if (a1.state[i] == 0) {
@@ -49,7 +52,8 @@ public class AiLab {
         }
         return -1;
     }
-
+    
+    //This method should help us direct the empty box depending on its postion
     public static ArrayList getMovements(Node node) {
         ArrayList<String> direction = new ArrayList<String>();
         int index = locateZero(node);
@@ -99,7 +103,8 @@ public class AiLab {
         }
         return direction;
     }
-
+    
+    //This method helps on generating the available children of the node we are at 
     public static ArrayList<Node> generateChildren(Node node) {
         ArrayList directions = getMovements(node);
         ArrayList<Node> children = new ArrayList<Node>();
@@ -133,7 +138,8 @@ public class AiLab {
         }
         return children;
     }
-
+    
+    //This method help us to make sure of this node has been visited before or no 
     public static Boolean isVisited(Node node) {
         for (int i = 0; i < visited.size(); i++) {
             int[] a1 = visited.get(i).state;
@@ -144,7 +150,8 @@ public class AiLab {
         }
         return false;
     }
-
+    
+    //This method help us swap between the indexes in the puzzle (array)
     public static void swap(int[] state, int first, int second) {
         int temp = state[first];
         state[first] = state[second];
@@ -161,7 +168,8 @@ public class AiLab {
         node.depth = 0;
         return node;
     }
-
+    
+    //Breadth-First Algorithm
     public static boolean BFS() {
         Node puzzle = randomNode();
         System.out.println("started at:\n" + puzzle);
@@ -190,7 +198,8 @@ public class AiLab {
         fringe.clear();
         return false;
     }
-
+    
+    //Deapth-First Algorithm
     public static boolean DFS(Node puzzle) {
         if (isGoal(puzzle.state)) {
             System.out.println("finished at:");
@@ -211,16 +220,20 @@ public class AiLab {
         }
         return false;
     }
-
+    
+    //Main method where all testing
     public static void main(String[] args) {
+        
         //calcluating complexity for BFS:
         double timeSum = 0;
         long nodeSum = 0;
-        int loopsCounter = 20;
-        for (int i = 0; i < loopsCounter; i++) {
+        int loopsCounter = 5; // determine how many puzzles we will use before taking average
+        for (int i = 1; i <= loopsCounter; i++) {
             nodesCounter = 1;
             long start1 = System.nanoTime();
+            System.out.println("Using BFS, Puzzle number: "+i);
             BFS();
+            System.out.println("************************");
             long end1 = System.nanoTime();
             long elapsedTime = end1 - start1;
             double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
@@ -233,12 +246,14 @@ public class AiLab {
         //calcluating complexity for DFS:
         timeSum = 0;
         nodeSum = 0;
-        for (int i = 0; i < loopsCounter; i++) {
+        for (int i = 1; i <= loopsCounter; i++) {
             nodesCounter = 1;
             long start1 = System.nanoTime();
             Node puzzle = randomNode();
+            System.out.println("Using DFS, Puzzle number: "+i);
             System.out.println("started at:\n" + puzzle);
             DFS(puzzle);
+            System.out.println("************************");
             long end1 = System.nanoTime();
             long elapsedTime = end1 - start1;
             double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
