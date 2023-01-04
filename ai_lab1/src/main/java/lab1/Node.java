@@ -24,6 +24,6 @@ public class  Node {
             result += state[i-1] + " ";
             if(i % 3 == 0) result += "\n";
         }
-        return result + "cost: " + this.depth + "\n";
+        return result + "depth: " + this.depth + "\n";
     }
 }

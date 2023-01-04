@@ -20,7 +20,8 @@ public class AiLab {
     public static final int[] GOAL = {1,2,3,4,5,6,7,8,0};  //the goal array that represents the goal 8-puzzle
     public static final ArrayList<Node> visited = new ArrayList<Node>();
     public static Queue<Node> fringe = new LinkedList<Node>();
-    public static final int TRUEDEPTH = 20;
+    public static long nodesCounter = 0;
+    public static final int TRUEDEPTH = 30;
     
     public static boolean isGoal(int[] a1){
         for (int i = 0; i < a1.length; i++) {
@@ -157,16 +158,20 @@ public class AiLab {
     }
     public static boolean BFS(){
         Node puzzle = randomNode();
+        System.out.println("started at:\n"+ puzzle);
         visited.add(puzzle);
         fringe.add(puzzle);
         while(!fringe.isEmpty()){
             puzzle = fringe.remove();
             if(isGoal(puzzle.state)){
+                System.out.println("finished at:");
                 System.out.println(puzzle);
-                System.out.println(true);
+                visited.clear();
+                fringe.clear();
                 return true;
             }
             ArrayList<Node> children = generateChildren(puzzle);
+            nodesCounter += children.size();
             for (int i = 0; i < children.size(); i++) {
                 Node childNode = children.get(i);
                 if(!isVisited(childNode) & childNode.depth <= TRUEDEPTH){
@@ -175,10 +180,11 @@ public class AiLab {
                 }
             }
         }
+        visited.clear();
+        fringe.clear();
         return false;
     }
     public static boolean DFS(Node puzzle){
-        System.out.println(puzzle);
         if(isGoal(puzzle.state)){
             System.out.println(puzzle);
             return true;
@@ -186,6 +192,7 @@ public class AiLab {
         if(puzzle.depth == TRUEDEPTH) return false;
         else{
             ArrayList<Node> children = generateChildren(puzzle);
+            nodesCounter += children.size();
             for (int i = 0; i < children.size(); i++) {
                 Node childNode = children.get(i);
                  if(DFS(childNode)) return true;
@@ -197,34 +204,44 @@ public class AiLab {
     
     
     public static void main (String [] args){
+        //calcluating complexity for BFS:
+        double timeSum = 0;
+        long nodeSum = 0;
+        int loopsCounter = 20;
+        for (int i = 0; i < loopsCounter; i++) {
+            nodesCounter = 0;
+            long start1 = System.nanoTime();
+            BFS();
+            long end1 = System.nanoTime();
+            long elapsedTime = end1 - start1;
+            double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
+            timeSum += elapsedTimeInSecond;
+            nodeSum += nodesCounter;
+        }
+        double BFSmeanTime = timeSum / loopsCounter;
+        double BFSmeanNodesCounter  = nodeSum / loopsCounter;
         
-//        boolean[] visited = new boolean[20];
-        Queue<Integer> q = new LinkedList<>();
         
-        int[] map = {1,2,3,4,0,6,7,8,5};
-        int[] map2 = {1,2,3,4,0,6,7,8,5};
-        int[] map3 = {1,2,3,0,4,6,7,8,5};
-        Node node = new Node(map, 0);
-        Node node2 = new Node(map3, 0);
-        visited.add(node);
-//        System.out.println(isGoal(map));
-//        System.out.println(locateZero(node));
-//        System.out.println(getMovements(node));
-//        generateChildren(node);
-//        System.out.println(generateChildren(node));
-//        System.out.println(isVisited(node2));
-//          BFS();
-        long start1 = System.nanoTime();
-        DFS(randomNode());
-//        BFS();
-
-        long end1 = System.nanoTime();
-        long elapsedTime = end1 - start1;
-        double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
-
-        System.out.println(elapsedTimeInSecond + " seconds");
-
-
-
+        //calcluating complexity for DFS:
+        timeSum = 0;
+        nodeSum = 0;
+        for (int i = 0; i < loopsCounter; i++) {
+            nodesCounter = 1;
+            long start1 = System.nanoTime();
+            DFS(randomNode());
+            long end1 = System.nanoTime();
+            long elapsedTime = end1 - start1;
+            double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
+            timeSum += elapsedTimeInSecond;
+            nodeSum += nodesCounter;
+        }
+        double DFSmeanTime = timeSum / loopsCounter;
+        double DFSmeanNodesCounter  = nodeSum / loopsCounter;
+        
+        
+        //displaying the complexity:
+        System.out.println("the average for BFS and DFS for" + loopsCounter + "times");
+        System.out.println("BFS took :" + BFSmeanTime +" seconds and created: " + BFSmeanNodesCounter + " nodes.");
+        System.out.println("DFS took :" + DFSmeanTime +" seconds and created: " + DFSmeanNodesCounter + " nodes.");
     }
 }
