@@ -18,7 +18,7 @@ public class AiLab {
     public static final int[] GOAL = {1,2,3,4,5,6,7,8,0};  //the goal array that represents the goal 8-puzzle
     public static final ArrayList<Node> visited = new ArrayList<Node>();
     public static Queue<Node> fringe = new LinkedList<Node>();
-    public static final int TRUEDEPTH = 50;
+    public static final int TRUEDEPTH = 20;
     
     public static boolean isGoal(int[] a1){
         for (int i = 0; i < a1.length; i++) {
@@ -175,23 +175,19 @@ public class AiLab {
         }
         return false;
     }
-    public static boolean DFS(){
-        Node puzzle = randomNode();
-        visited.add(puzzle);
-        fringe.add(puzzle);
-        while(!fringe.isEmpty()){
-            puzzle = fringe.peek();
+    public static boolean DFS(Node puzzle){
+        System.out.println(puzzle);
+        if(isGoal(puzzle.state)){
+            System.out.println(puzzle);
+            return true;
+        }
+        if(puzzle.depth == TRUEDEPTH) return false;
+        else{
             ArrayList<Node> children = generateChildren(puzzle);
             for (int i = 0; i < children.size(); i++) {
                 Node childNode = children.get(i);
-                if(!isVisited(childNode) & childNode.depth <= TRUEDEPTH){
-                    visited.add(childNode);
-                    fringe.add(childNode);
-                }
+                 if(DFS(childNode)) return true;
             }
-        }
-        for (int i = 0; i < fringe.size(); i++) {
-            Node current = fringe.;
         }
         return false;
     }
@@ -215,7 +211,8 @@ public class AiLab {
 //        generateChildren(node);
 //        System.out.println(generateChildren(node));
 //        System.out.println(isVisited(node2));
-          BFS();
+//          BFS();
+        DFS(randomNode());
           
     }
 }
