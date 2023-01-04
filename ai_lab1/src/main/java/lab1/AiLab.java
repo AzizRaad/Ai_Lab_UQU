@@ -17,7 +17,8 @@ import java.lang.Math;
 public class AiLab {
     public static final int[] GOAL = {1,2,3,4,5,6,7,8,0};  //the goal array that represents the goal 8-puzzle
     public static final ArrayList<Node> visited = new ArrayList<Node>();
-    public static Queue<Node> fringe = new PriorityQueue<Node>();
+    public static Queue<Node> fringe = new LinkedList<Node>();
+    public static final int TRUEDEPTH = 50;
     
     public static boolean isGoal(int[] a1){
         for (int i = 0; i < a1.length; i++) {
@@ -104,22 +105,22 @@ public class AiLab {
             switch(directions.get(i).toString()){
                 case "up": 
                     swap(newState, index, index-3);
-                    newNode = new Node(newState, 0);
+                    newNode = new Node(newState, node.depth+1);
                     children.add(newNode);
                     break;
                 case "right": 
                     swap(newState, index, index+1);
-                    newNode = new Node(newState, 0);
+                    newNode = new Node(newState,  node.depth+1);
                     children.add(newNode);
                     break;
                 case "down": 
                     swap(newState, index, index+3);
-                    newNode = new Node(newState, 0);
+                    newNode = new Node(newState,  node.depth+1);
                     children.add(newNode);
                     break;
                 case "left": 
                     swap(newState, index, index-1);
-                    newNode = new Node(newState, 0);
+                    newNode = new Node(newState,  node.depth+1);
                     children.add(newNode);
                     break;
             }
@@ -144,19 +145,55 @@ public class AiLab {
     }
     public static Node randomNode(){
         Node node = new Node(GOAL,0);
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < TRUEDEPTH; i++) {
             ArrayList<Node> children =  generateChildren(node);
             int randomIndex = (int) (Math.random() * children.size());
             node = children.get(randomIndex);
         }
+        node.depth = 0;
         return node;
     }
-    public static void BFS(){
-        Node node = randomNode();
-        visited.add(node);
-        while(!visited.isEmpty()){
-            node = fringe.remove();
+    public static boolean BFS(){
+        Node puzzle = randomNode();
+        visited.add(puzzle);
+        fringe.add(puzzle);
+        while(!fringe.isEmpty()){
+            puzzle = fringe.remove();
+            if(isGoal(puzzle.state)){
+                System.out.println(puzzle);
+                System.out.println(true);
+                return true;
+            }
+            ArrayList<Node> children = generateChildren(puzzle);
+            for (int i = 0; i < children.size(); i++) {
+                Node childNode = children.get(i);
+                if(!isVisited(childNode) & childNode.depth <= TRUEDEPTH){
+                    visited.add(childNode);
+                    fringe.add(childNode);
+                }
+            }
         }
+        return false;
+    }
+    public static boolean DFS(){
+        Node puzzle = randomNode();
+        visited.add(puzzle);
+        fringe.add(puzzle);
+        while(!fringe.isEmpty()){
+            puzzle = fringe.peek();
+            ArrayList<Node> children = generateChildren(puzzle);
+            for (int i = 0; i < children.size(); i++) {
+                Node childNode = children.get(i);
+                if(!isVisited(childNode) & childNode.depth <= TRUEDEPTH){
+                    visited.add(childNode);
+                    fringe.add(childNode);
+                }
+            }
+        }
+        for (int i = 0; i < fringe.size(); i++) {
+            Node current = fringe.;
+        }
+        return false;
     }
     
     
@@ -178,25 +215,7 @@ public class AiLab {
 //        generateChildren(node);
 //        System.out.println(generateChildren(node));
 //        System.out.println(isVisited(node2));
-          System.out.println(randomNode());
-    }
-}
-
-class  Node {
-    public int[] state;
-    public int cost ;
-    
-    public Node(int[] state,int cost){
-        this.state = state;
-        this.cost = cost;
-    }
-    
-    public String toString(){
-        String result = "\n" ;
-        for (int i = 1; i < state.length+1; i++) {
-            result += state[i-1] + " ";
-            if(i % 3 == 0) result += "\n";
-        }
-        return result + "\n";
+          BFS();
+          
     }
 }
