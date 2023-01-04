@@ -7,7 +7,9 @@ package lab1;
 
 import java.io.*;
 import java.util.*;
-import java.lang.Math;   
+import java.lang.Math;
+import java.time.Duration;
+import java.time.Instant;
 
 
 /**
@@ -212,7 +214,17 @@ public class AiLab {
 //        System.out.println(generateChildren(node));
 //        System.out.println(isVisited(node2));
 //          BFS();
+        long start1 = System.nanoTime();
         DFS(randomNode());
-          
+//        BFS();
+
+        long end1 = System.nanoTime();
+        long elapsedTime = end1 - start1;
+        double elapsedTimeInSecond = (double) elapsedTime / 1_000_000_000;
+
+        System.out.println(elapsedTimeInSecond + " seconds");
+
+
+
     }
 }
